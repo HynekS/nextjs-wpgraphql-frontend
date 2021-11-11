@@ -1,18 +1,47 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import tw, { css } from "twin.macro";
+
+import Contacts from "@components/contacts";
+import Logo from "@components/logo";
+
+// TODO: extract, clean up
+const usePushContent = (headerElementRef, breakpoint = 768) =>
+  useEffect(() => {
+    let resizeObserver;
+    if (headerElementRef.current) {
+      resizeObserver = new ResizeObserver(() => {
+        let transformed = false;
+        if (window.innerWidth < breakpoint && !transformed) {
+          document.body.style.paddingTop = `${headerElementRef.current.clientHeight}px`;
+          transformed = true;
+        } else {
+          document.body.style.removeProperty("padding-top");
+          transformed = false;
+        }
+      });
+      resizeObserver.observe(document.body);
+    }
+    return () => {
+      resizeObserver = null;
+    };
+  }, []);
 
 export default function NavPrimary({ navItems }) {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const { asPath } = useRouter();
   const { nodes = [] } = navItems;
 
+  let headerElement = useRef(null);
+
   const closeOnEsc = (e) => {
     if (e.key === "Escape") {
       setIsNavMenuOpen(false);
     }
   };
+
+  usePushContent(headerElement);
 
   // Listen to Esc key
   useEffect(() => {
@@ -44,8 +73,40 @@ export default function NavPrimary({ navItems }) {
 
   const getRoot = (pathString): string => pathString.match(/^\/[^\/\?]+/)?.[0];
 
-  return (
+  const menu = () => (
+    // TODO Pointer events ternary
+    <nav tw="h-full md:(flex h-auto justify-end)">
+      <ul
+        css={[
+          tw`pointer-events-auto h-full transition[transform 0.5s ease-in-out] bg-white md:(flex py-4 static w-auto h-auto)`,
+          isNavMenuOpen
+            ? tw`md:(transform[translateX(0)])`
+            : tw`(transform[translateX(-100%)]) md:(transform[translateX(0)])`,
+        ]}
+      >
+        {nodes.map((node) => (
+          <li key={node.id}>
+            <Link href={node.path}>
+              <a
+                css={[
+                  tw`pb-0.5 color[var(--default-text-color)] whitespace-nowrap ml-4 uppercase transition[border-color .3s ease-in-out] hover:(color[var(--default-text-color)] border-b-2 border-bottom-color[var(--brand-color-red)])`,
+                  // active nav item has a different color
+                  getRoot(asPath) === node.path &&
+                    tw`border-b-2 border-bottom-color[var(--brand-color-yellow)]`,
+                ]}
+              >
+                {node.label}
+              </a>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+
+  const toggleButton = () => (
     <nav
+      tw="md:(hidden) p-2"
       aria-labelledby="primary-navigation"
       // TODO simplify using selector nesting etc.
       css={css`
@@ -156,7 +217,6 @@ export default function NavPrimary({ navItems }) {
     >
       <button
         // sorry for the !, I just dont't have morals to do it in a cleaner way (& I don't want to set it via the hamburger css snippet)
-        tw="md:(hidden!)"
         id="primary-navigation"
         aria-label={`${
           isNavMenuOpen ? `Hide navigation menu` : `Show navigation menu`
@@ -164,38 +224,29 @@ export default function NavPrimary({ navItems }) {
         aria-expanded={isNavMenuOpen}
         onClick={() => setIsNavMenuOpen(!isNavMenuOpen)}
         className={`hamburger hamburger--squeeze ${
-          isNavMenuOpen && `is-active`
+          isNavMenuOpen ? `is-active` : ""
         }`}
       >
         <div className="hamburger-box">
           <div className="hamburger-inner"></div>
         </div>
       </button>
-      <ul
-        css={[
-          tw`md:(flex py-4 static w-auto)`,
-          isNavMenuOpen
-            ? tw`w-full absolute bg-white left-0 z-10`
-            : tw`hidden w-0`,
-        ]}
-      >
-        {nodes.map((node) => (
-          <li key={node.id}>
-            <Link href={node.path}>
-              <a
-                css={[
-                  tw`pb-0.5 color[var(--default-text-color)] whitespace-nowrap ml-4 uppercase transition[border-color .3s ease-in-out] hover:(color[var(--default-text-color)] border-b-2 border-bottom-color[var(--brand-color-red)])`,
-                  // active nav item has a different color
-                  getRoot(asPath) === node.path &&
-                    tw`border-b-2 border-bottom-color[var(--brand-color-yellow)]`,
-                ]}
-              >
-                {node.label}
-              </a>
-            </Link>
-          </li>
-        ))}
-      </ul>
     </nav>
+  );
+
+  return (
+    <>
+      <div
+        ref={headerElement}
+        tw="flex pt-3 items-center bg-white pointer-events-auto background-image[url('/assets/images/triangles.svg')] background-position[0 -12px] bg-repeat-x md:(bg-none pt-0)"
+      >
+        <Logo />
+        {toggleButton()}
+      </div>
+      <div tw="flex flex-col flex-1 md:(justify-between)">
+        <Contacts />
+        {menu()}
+      </div>
+    </>
   );
 }
