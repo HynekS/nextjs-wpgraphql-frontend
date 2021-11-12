@@ -12,14 +12,13 @@ import Card from "@components/card";
 import { getAnnouncements } from "@lib/api";
 
 //types
-import type { Unwrap } from "@lib/type-utils";
+import type { InferGetStaticPropsType } from "next";
 
 export default function Announcement({
-  allAnnouncements: { nodes },
-}: {
-  allAnnouncements: Unwrap<typeof getAnnouncements>;
-}) {
+  allAnnouncements,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const breadcrumbs = useBreadcrumbs();
+  const { nodes } = allAnnouncements || {};
 
   return (
     <div>
@@ -33,9 +32,11 @@ export default function Announcement({
       <ContentWrapper>
         <h1>Aktuality</h1>
         <section tw="flex flex-row flex-wrap justify-between">
-          {nodes.map((node) => (
-            <Card baseUrl="aktuality" node={node} key={node.id} />
-          ))}
+          {nodes
+            ? nodes.map((node) => (
+                <Card baseUrl="aktuality" node={node} key={node?.id} />
+              ))
+            : null}
         </section>
       </ContentWrapper>
     </div>
@@ -44,11 +45,11 @@ export default function Announcement({
 
 Announcement.Layout = SiteLayout;
 
-export async function getStaticProps() {
+export const getStaticProps = async () => {
   const allAnnouncements = await getAnnouncements();
   return {
     props: {
       allAnnouncements,
     },
   };
-}
+};

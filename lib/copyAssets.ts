@@ -10,6 +10,6 @@ fs.copy(
   `${rootPath}/next/public/assets/uploads`
 )
   .then(() => console.log("Copied!"))
-  .catch((err) => console.error(err));
+  .catch((err: Error) => console.error(err));
 
 export {};

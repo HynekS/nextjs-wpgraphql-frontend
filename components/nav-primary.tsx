@@ -6,15 +6,33 @@ import tw, { css } from "twin.macro";
 import Contacts from "@components/contacts";
 import Logo from "@components/logo";
 
+type NavItems = {
+  nodes: {
+    path: string;
+    order: number;
+    id: string;
+    label: string;
+  }[];
+};
+
+type NavPrimaryProps = {
+  navItems: NavItems;
+};
+
 // TODO: extract, clean up
-const usePushContent = (headerElementRef, breakpoint = 768) =>
+const usePushContent = (
+  headerElementRef: React.RefObject<HTMLDivElement>,
+  breakpoint = 768
+) =>
   useEffect(() => {
-    let resizeObserver;
+    let resizeObserver: ResizeObserver | null;
     if (headerElementRef.current) {
       resizeObserver = new ResizeObserver(() => {
         let transformed = false;
         if (window.innerWidth < breakpoint && !transformed) {
-          document.body.style.paddingTop = `${headerElementRef.current.clientHeight}px`;
+          document.body.style.paddingTop = `${
+            headerElementRef.current!.clientHeight
+          }px`;
           transformed = true;
         } else {
           document.body.style.removeProperty("padding-top");
@@ -28,14 +46,14 @@ const usePushContent = (headerElementRef, breakpoint = 768) =>
     };
   }, []);
 
-export default function NavPrimary({ navItems }) {
+export default function NavPrimary({ navItems }: NavPrimaryProps) {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const { asPath } = useRouter();
   const { nodes = [] } = navItems;
 
-  let headerElement = useRef(null);
+  let headerElement = useRef<HTMLDivElement>(null);
 
-  const closeOnEsc = (e) => {
+  const closeOnEsc = (e: KeyboardEvent) => {
     if (e.key === "Escape") {
       setIsNavMenuOpen(false);
     }
@@ -71,10 +89,10 @@ export default function NavPrimary({ navItems }) {
     return () => {};
   }, [asPath]);
 
-  const getRoot = (pathString): string => pathString.match(/^\/[^\/\?]+/)?.[0];
+  const getRoot = (pathString: string): string | undefined =>
+    pathString.match(/^\/[^\/\?]+/)?.[0];
 
-  const menu = () => (
-    // TODO Pointer events ternary
+  const menu = (items: NavItems["nodes"]) => (
     <nav tw="h-full md:(flex h-auto justify-end)">
       <ul
         css={[
@@ -84,18 +102,18 @@ export default function NavPrimary({ navItems }) {
             : tw`(transform[translateX(-100%)]) md:(transform[translateX(0)])`,
         ]}
       >
-        {nodes.map((node) => (
-          <li key={node.id}>
-            <Link href={node.path}>
+        {items.map((item) => (
+          <li key={item.id}>
+            <Link href={item.path}>
               <a
                 css={[
                   tw`pb-0.5 color[var(--default-text-color)] whitespace-nowrap ml-4 uppercase transition[border-color .3s ease-in-out] hover:(color[var(--default-text-color)] border-b-2 border-bottom-color[var(--brand-color-red)])`,
                   // active nav item has a different color
-                  getRoot(asPath) === node.path &&
+                  getRoot(asPath) === item.path &&
                     tw`border-b-2 border-bottom-color[var(--brand-color-yellow)]`,
                 ]}
               >
-                {node.label}
+                {item.label}
               </a>
             </Link>
           </li>
@@ -245,7 +263,7 @@ export default function NavPrimary({ navItems }) {
       </div>
       <div tw="flex flex-col flex-1 md:(justify-between)">
         <Contacts />
-        {menu()}
+        {menu(nodes)}
       </div>
     </>
   );

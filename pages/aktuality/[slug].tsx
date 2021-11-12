@@ -12,17 +12,16 @@ import Breadcrumbs from "@components/breadcrumbs";
 import { getAnnouncement, getAllAnnouncementsWithSlug } from "@lib/api";
 
 //types
-import type { Unwrap } from "@lib/type-utils";
+import type { InferGetStaticPropsType, GetStaticPropsContext } from "next";
 
-const replacer = new RegExp(process.env.ASSETS_PATH_REPLACER, "gi");
-const target = process.env.ASSETS_PATH_TO_REPLACE;
+const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
+const target = String(process.env.ASSETS_PATH_TO_REPLACE);
 
 export default function Announcement({
-  announcement: { content, title },
-}: {
-  announcement: Unwrap<typeof getAnnouncement>;
-}) {
+  announcement,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const breadcrumbs = useBreadcrumbs();
+  let { content, title } = announcement || {};
 
   return (
     <div>
@@ -31,7 +30,10 @@ export default function Announcement({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <BreadcrumbsWrapper>
-        <Breadcrumbs nodes={breadcrumbs} currentTitle={title} />
+        <Breadcrumbs
+          nodes={breadcrumbs}
+          currentTitle={title || "Missing Title"}
+        />
       </BreadcrumbsWrapper>
       <ContentWrapper>
         <div tw="md:(max-width[76ch])">
@@ -58,7 +60,7 @@ export default function Announcement({
               }
             `}
             dangerouslySetInnerHTML={{
-              __html: content.replace(replacer, target),
+              __html: content ? content.replace(replacer, target) : "",
             }}
           />
         </div>
@@ -69,8 +71,10 @@ export default function Announcement({
 
 Announcement.Layout = SiteLayout;
 
-export async function getStaticProps(context) {
-  const { slug } = context.params;
+export async function getStaticProps(
+  context: GetStaticPropsContext<{ slug: string }>
+) {
+  const slug = String(context.params?.slug);
   const announcement = await getAnnouncement(slug);
   return {
     props: {
@@ -83,7 +87,7 @@ export async function getStaticPaths() {
   const allAnnouncements = await getAllAnnouncementsWithSlug();
   return {
     paths:
-      allAnnouncements.nodes.map((node) => `/aktuality/${node.slug}`) || [],
+      allAnnouncements?.nodes?.map((node) => `/aktuality/${node?.slug}`) || [],
     fallback: false,
   };
 }

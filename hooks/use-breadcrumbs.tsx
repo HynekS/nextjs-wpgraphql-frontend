@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-interface Breadcrumb {
+export type Breadcrumb = {
   label: string;
   href: string;
-}
+};
 
 export default function useBreadcrumbs({
   homeLabel = "Home",
   includeQueryParams = false,
 } = {}): Breadcrumb[] | null {
   const router = useRouter();
-  const [breadcrumbs, setBreadcrumbs] = useState(null);
+  const [breadcrumbs, setBreadcrumbs] = useState<Breadcrumb[] | null>(null);
 
   const resolveLabel = (path: string, i: number): string => {
     switch (true) {
@@ -26,7 +26,7 @@ export default function useBreadcrumbs({
 
   useEffect(() => {
     if (router) {
-      const paths = router.asPath.split("/").map((path, i) => {
+      const paths = router.asPath.split("/").map((path, i): Breadcrumb => {
         return {
           label: resolveLabel(path, i),
           href: "/" + path,

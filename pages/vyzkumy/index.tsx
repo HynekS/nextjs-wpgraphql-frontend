@@ -13,32 +13,35 @@ import Card from "@components/card";
 import { getExcavations } from "@lib/api";
 
 //types
-import type { Unwrap } from "@lib/type-utils";
+import type { InferGetStaticPropsType } from "next";
 
 const POSTS_PER_PAGE = 9;
 
 const ExcavationsPage = ({
-  allExcavations: { nodes },
-}: {
-  allExcavations: Unwrap<typeof getExcavations>;
-}) => {
+  allExcavations,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   const router = useRouter();
   const breadcrumbs = useBreadcrumbs();
+
+  const { nodes } = allExcavations || {};
 
   const {
     query: { page = 0 },
   } = useRouter();
 
-  const currentPageSlice = nodes.slice(
-    +page * POSTS_PER_PAGE,
-    +page * POSTS_PER_PAGE + POSTS_PER_PAGE
-  );
-  const isNextPageSlice = Boolean(
-    nodes.slice(
-      (+page + 1) * POSTS_PER_PAGE,
-      (+page + 1) * POSTS_PER_PAGE + POSTS_PER_PAGE
-    ).length
-  );
+  const currentPageSlice =
+    nodes?.slice(
+      +page * POSTS_PER_PAGE,
+      +page * POSTS_PER_PAGE + POSTS_PER_PAGE
+    ) || [];
+
+  const isNextPageSlice =
+    Boolean(
+      nodes?.slice(
+        (+page + 1) * POSTS_PER_PAGE,
+        (+page + 1) * POSTS_PER_PAGE + POSTS_PER_PAGE
+      ).length
+    ) || [];
 
   return (
     <>
@@ -74,7 +77,7 @@ const ExcavationsPage = ({
         <section tw="flex flex-row flex-wrap justify-between">
           {currentPageSlice.length
             ? currentPageSlice.map((node) => (
-                <Card baseUrl="vyzkumy" node={node} key={node.id} />
+                <Card baseUrl="vyzkumy" node={node} key={node?.id} />
               ))
             : null}
         </section>
@@ -85,13 +88,14 @@ const ExcavationsPage = ({
 
 ExcavationsPage.Layout = SiteLayout;
 
-export async function getStaticProps() {
+export const getStaticProps = async () => {
   const allExcavations = await getExcavations();
+
   return {
     props: {
       allExcavations,
     },
   };
-}
+};
 
 export default ExcavationsPage;

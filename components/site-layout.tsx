@@ -1,12 +1,14 @@
 import Header from "@components/header";
 import NavPrimary from "@components/nav-primary";
-import Contacts from "@components/contacts";
 import Footer from "@components/footer";
-import Logo from "@components/logo";
 
 import { navItems } from "../global-manifest.json";
 
-export default function SiteLayout({ children }) {
+type ChildrenProps = {
+  children?: React.ReactNode;
+};
+
+export default function SiteLayout({ children }: ChildrenProps) {
   return (
     <>
       <Header>

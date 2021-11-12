@@ -9,18 +9,14 @@ import ContentWrapper from "@components/content-wrapper";
 import { getAnnouncements, getExcavations } from "@lib/api";
 
 // types
-import type { Unwrap } from "@lib/type-utils";
+import type { InferGetStaticPropsType } from "next";
 
-const replacer = new RegExp(process.env.ASSETS_PATH_REPLACER, "gi");
-const target = process.env.ASSETS_PATH_TO_REPLACE;
-
+const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
+const target = String(process.env.ASSETS_PATH_TO_REPLACE);
 export default function Home({
-  latestExcavations,
-  latestAnnouncements,
-}: {
-  latestExcavations: Unwrap<typeof getExcavations>;
-  latestAnnouncements: Unwrap<typeof getAnnouncements>;
-}) {
+  latestExcavations = {},
+  latestAnnouncements = {},
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
       <Head>
@@ -81,82 +77,95 @@ export default function Home({
         <div tw="relative p-8 bg-white md:(flex -top-48 min-height[12rem] rounded-t-3xl)">
           <div tw="md:(flex[1 1 66%])">
             <h2 tw="mt-0">Aktuality</h2>
-            {latestAnnouncements.nodes.map((node, i) => (
-              <div key={node.id} tw="md:(pb-4 flex)">
-                <div
-                  css={[
-                    tw`overflow-hidden border-bottom[4px solid var(--brand-color-yellow)]`,
-                    i ? tw`flex[0 0 6rem]` : tw`flex[0 0 12rem]`,
-                  ]}
-                >
-                  <Link href={`/aktuality/${node.slug}`}>
-                    <a tw="relative flex padding-bottom[66%] h-full">
-                      <img
-                        tw="absolute object-cover w-full h-full overflow-hidden"
-                        srcSet={
-                          node.featuredImage.node.srcSet &&
-                          String(
-                            node.featuredImage.node.srcSet.replace(
-                              replacer,
-                              target
-                            )
-                          )
-                        }
-                        src={String(
-                          node.featuredImage.node.sourceUrl.replace(
-                            replacer,
-                            target
-                          )
-                        )}
-                        alt={node?.featuredImage.node.altText}
-                      ></img>
-                    </a>
-                  </Link>
-                </div>
-                <Link href={`/aktuality/${node.slug}`}>
-                  <a tw="md:(w-full ml-4 mr-8 border-b border-gray-300)">
-                    <h3 tw="mt-0 text-lg text-gray-600">{node.title}</h3>
-                  </a>
-                </Link>
-              </div>
-            ))}
+            {latestAnnouncements && latestAnnouncements.nodes
+              ? latestAnnouncements.nodes.map((node, i) =>
+                  node ? (
+                    <div key={node.id} tw="md:(pb-4 flex)">
+                      <div
+                        css={[
+                          tw`overflow-hidden border-bottom[4px solid var(--brand-color-yellow)]`,
+                          i ? tw`flex[0 0 6rem]` : tw`flex[0 0 12rem]`,
+                        ]}
+                      >
+                        <Link href={`/aktuality/${node.slug}`}>
+                          <a tw="relative flex padding-bottom[66%] h-full">
+                            <img
+                              tw="absolute object-cover w-full h-full overflow-hidden"
+                              srcSet={
+                                (node.featuredImage?.node?.srcSet &&
+                                  String(
+                                    node.featuredImage.node.srcSet.replace(
+                                      replacer,
+                                      target
+                                    )
+                                  )) ??
+                                undefined
+                              }
+                              sizes={
+                                node.featuredImage?.node?.sizes ?? undefined
+                              }
+                              src={String(
+                                node.featuredImage?.node?.sourceUrl?.replace(
+                                  replacer,
+                                  target
+                                )
+                              )}
+                              alt={node.featuredImage?.node?.altText ?? ""}
+                            ></img>
+                          </a>
+                        </Link>
+                      </div>
+                      <Link href={`/aktuality/${node?.slug}`}>
+                        <a tw="md:(w-full ml-4 mr-8 border-b border-gray-300)">
+                          <h3 tw="mt-0 text-lg text-gray-600">{node?.title}</h3>
+                        </a>
+                      </Link>
+                    </div>
+                  ) : null
+                )
+              : null}
           </div>
           <div tw="md:(flex[1 1 30%])">
             <h2 tw="mt-0">Výzkumy</h2>
-            {latestExcavations.nodes.map((node) => (
-              <div key={node.id}>
-                <div tw="border-bottom[5px solid var(--brand-color-yellow)] relative overflow-hidden">
-                  <Link href={`/vyzkumy/${node.slug}`}>
-                    <a tw="relative flex padding-bottom[66%]">
-                      <img
-                        tw="absolute inset-0 object-cover w-full h-auto overflow-hidden"
-                        srcSet={
-                          node.featuredImage.node.srcSet &&
-                          String(
-                            node.featuredImage.node.srcSet.replace(
-                              replacer,
-                              target
-                            )
-                          )
-                        }
-                        src={String(
-                          node.featuredImage.node.sourceUrl.replace(
-                            replacer,
-                            target
-                          )
-                        )}
-                        alt={node?.featuredImage.node.altText}
-                      ></img>
-                    </a>
-                  </Link>
-                </div>
-                <Link href={`/vyzkumy/${node.slug}`}>
-                  <a>
-                    <h3 tw="mt-0 text-lg text-gray-600">{node.title}</h3>
-                  </a>
-                </Link>
-              </div>
-            ))}
+            {latestExcavations && latestExcavations.nodes
+              ? latestExcavations.nodes.map((node) =>
+                  node ? (
+                    <div key={node?.id}>
+                      <div tw="border-bottom[5px solid var(--brand-color-yellow)] relative overflow-hidden">
+                        <Link href={`/vyzkumy/${node?.slug}`}>
+                          <a tw="relative flex padding-bottom[66%]">
+                            <img
+                              tw="absolute inset-0 object-cover w-full h-auto overflow-hidden"
+                              srcSet={
+                                (node.featuredImage?.node?.srcSet &&
+                                  String(
+                                    node.featuredImage?.node?.srcSet?.replace(
+                                      replacer,
+                                      target
+                                    )
+                                  )) ||
+                                undefined
+                              }
+                              src={String(
+                                node.featuredImage?.node?.sourceUrl?.replace(
+                                  replacer,
+                                  target
+                                )
+                              )}
+                              alt={node.featuredImage?.node?.altText ?? ""}
+                            ></img>
+                          </a>
+                        </Link>
+                      </div>
+                      <Link href={`/vyzkumy/${node?.slug}`}>
+                        <a>
+                          <h3 tw="mt-0 text-lg text-gray-600">{node?.title}</h3>
+                        </a>
+                      </Link>
+                    </div>
+                  ) : null
+                )
+              : null}
           </div>
         </div>
       </ContentWrapper>
@@ -166,7 +175,7 @@ export default function Home({
 
 Home.Layout = SiteLayout;
 
-export async function getStaticProps() {
+export const getStaticProps = async () => {
   const latestAnnouncements = await getAnnouncements({ first: 7 });
   const latestExcavations = await getExcavations({ first: 3 });
 
@@ -176,4 +185,4 @@ export async function getStaticProps() {
       latestExcavations,
     },
   };
-}
+};

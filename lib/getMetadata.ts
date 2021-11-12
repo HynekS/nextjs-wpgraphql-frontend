@@ -12,12 +12,16 @@ type PathLableTuple = [string, string];
 const MANIFEST_FILE_NAME = "global-manifest.json";
 const PRIMARY_NAV_NAME = "nav-primary";
 
+type ContentTypeNode = {
+  label: string;
+};
+
 async function createManifestsFromCMS() {
   const navItems = await getMenuItems(PRIMARY_NAV_NAME);
   const contentTypes = await getContentTypes();
 
   const contentTypesTuples: PathLableTuple[] =
-    contentTypes?.nodes.map((node) => [
+    contentTypes?.nodes.map((node: ContentTypeNode) => [
       "/" + slugify(node.label, { lower: true }),
       node.label,
     ]) || [];
@@ -25,7 +29,7 @@ async function createManifestsFromCMS() {
   fs.writeFile(
     MANIFEST_FILE_NAME,
     JSON.stringify({ navItems, contentTypesTuples }),
-    (err) => {
+    (err: Error) => {
       if (err) throw err;
       console.log(
         chalk.green(`
@@ -42,7 +46,7 @@ async function main() {
   try {
     await createManifestsFromCMS();
   } catch (err) {
-    throw new Error(err);
+    throw new Error(String(err));
   }
 }
 

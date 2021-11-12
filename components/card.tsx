@@ -1,10 +1,50 @@
 import Link from "next/link";
 
-const replacer = new RegExp(process.env.ASSETS_PATH_REPLACER, "gi");
-const target = process.env.ASSETS_PATH_TO_REPLACE;
+import { Maybe, Announcement, Excavation, MediaItem } from "generated/graphql";
 
-export default function Card({ baseUrl, node }) {
-  return (
+type AnnouncementNode = Maybe<
+  { __typename?: "Announcement" } & Pick<
+    Announcement,
+    "slug" | "title" | "id"
+  > & {
+      featuredImage?: Maybe<
+        { __typename?: "NodeWithFeaturedImageToMediaItemConnectionEdge" } & {
+          node?: Maybe<
+            { __typename?: "MediaItem" } & Pick<
+              MediaItem,
+              "altText" | "srcSet" | "sourceUrl" | "sizes"
+            >
+          >;
+        }
+      >;
+    }
+>;
+
+type ExcavationNode = Maybe<
+  { __typename?: "Excavation" } & Pick<Excavation, "slug" | "title" | "id"> & {
+      featuredImage?: Maybe<
+        { __typename?: "NodeWithFeaturedImageToMediaItemConnectionEdge" } & {
+          node?: Maybe<
+            { __typename?: "MediaItem" } & Pick<
+              MediaItem,
+              "altText" | "srcSet" | "sourceUrl" | "sizes"
+            >
+          >;
+        }
+      >;
+    }
+>;
+
+const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
+const target = String(process.env.ASSETS_PATH_TO_REPLACE);
+
+type CardProps = {
+  baseUrl: string;
+  node: AnnouncementNode | ExcavationNode;
+};
+
+export default function Card({ baseUrl, node }: CardProps) {
+  return node ? (
     <div key={node.id} tw="mb-8 md:(width[31%])">
       <div tw="border-bottom[5px solid var(--brand-color-yellow)] relative overflow-hidden">
         <Link href={`/${baseUrl}/${node.slug}`}>
@@ -13,18 +53,19 @@ export default function Card({ baseUrl, node }) {
               tw="object-cover w-full h-auto  overflow-hidden transition-transform duration-700 hover:(transform[scale(1.1)])"
               srcSet={
                 // Some srcSets are missing, even after regenerating thumbnails :/
-                node?.featuredImage.node.srcSet &&
-                String(node?.featuredImage.node.srcSet).replace(
-                  replacer,
-                  target
-                )
+                (node.featuredImage?.node?.srcSet &&
+                  String(node.featuredImage.node.srcSet).replace(
+                    replacer,
+                    target
+                  )) ??
+                undefined
               }
-              sizes={node?.featuredImage.node.sizes}
-              src={String(node?.featuredImage.node.sourceUrl).replace(
+              sizes={node.featuredImage?.node?.sizes ?? undefined}
+              src={String(node.featuredImage?.node?.sourceUrl).replace(
                 replacer,
                 target
               )}
-              alt={node?.featuredImage.node.altText}
+              alt={node.featuredImage?.node?.altText ?? ""}
             ></img>
           </a>
         </Link>
@@ -35,5 +76,5 @@ export default function Card({ baseUrl, node }) {
         </a>
       </Link>
     </div>
-  );
+  ) : null;
 }

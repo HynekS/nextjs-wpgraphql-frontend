@@ -11,14 +11,14 @@ import Breadcrumbs from "@components/breadcrumbs";
 import { getPage, getAllPagesWithSlug } from "@lib/api";
 
 // types
-import type { Unwrap } from "@lib/type-utils";
+import type { InferGetStaticPropsType, GetStaticPropsContext } from "next";
 
-type PageProps = {
-  page: Unwrap<typeof getPage>;
-};
-
-export default function Page({ page: { content, title } }: PageProps) {
+export default function Page({
+  page,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const breadcrumbs = useBreadcrumbs();
+
+  const { content, title } = page || {};
 
   return (
     <div>
@@ -27,11 +27,14 @@ export default function Page({ page: { content, title } }: PageProps) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <BreadcrumbsWrapper>
-        <Breadcrumbs nodes={breadcrumbs} currentTitle={title} />
+        <Breadcrumbs
+          nodes={breadcrumbs}
+          currentTitle={title ?? "Missing title"}
+        />
       </BreadcrumbsWrapper>
       <ContentWrapper>
         <h1>{title}</h1>
-        <section dangerouslySetInnerHTML={{ __html: content }} />
+        <section dangerouslySetInnerHTML={{ __html: content ?? "" }} />
       </ContentWrapper>
     </div>
   );
@@ -39,20 +42,22 @@ export default function Page({ page: { content, title } }: PageProps) {
 
 Page.Layout = SiteLayout;
 
-export async function getStaticProps(context) {
-  const { slug } = context.params;
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ slug: string }>
+) => {
+  const slug = String(context.params?.slug);
   const page = await getPage(slug);
   return {
     props: {
       page,
     },
   };
-}
+};
 
-export async function getStaticPaths() {
+export const getStaticPaths = async () => {
   const pages = await getAllPagesWithSlug();
   return {
-    paths: pages.nodes.map((node) => `/${node.slug}`) || [],
+    paths: pages?.nodes?.map((node) => `/${node?.slug}`) || [],
     fallback: false,
   };
-}
+};

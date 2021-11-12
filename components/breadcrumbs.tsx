@@ -2,13 +2,23 @@ import Link from "next/link";
 
 import { contentTypesTuples } from "global-manifest.json";
 
+import type { Breadcrumb } from "../hooks/use-breadcrumbs";
+
 const contentTypesTuplesMap: Map<string, string> = new Map(
   contentTypesTuples as [string, string][]
 );
 
 const removeQueryString = (str: string) => str.split("?")[0];
 
-export default function Breadcrumbs({ nodes, currentTitle = "" }) {
+type BreadcrumbProps = {
+  nodes: Breadcrumb[] | null;
+  currentTitle?: string;
+};
+
+export default function Breadcrumbs({
+  nodes,
+  currentTitle = "",
+}: BreadcrumbProps) {
   return nodes ? (
     <ol tw="flex h-full text-xs">
       {nodes.map(({ href, label }, i, { length }) => (

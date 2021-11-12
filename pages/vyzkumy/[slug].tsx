@@ -7,21 +7,27 @@ import ContentWrapper from "@components/content-wrapper";
 import BreadcrumbsWrapper from "@components/breadcrumbs-wrapper";
 import Breadcrumbs from "@components/breadcrumbs";
 
-// data
+// queries
 import { getExcavation, getAllExcavationsWithSlug } from "@lib/api";
 
-//types
-import type { Unwrap } from "@lib/type-utils";
+// types
+import type { InferGetStaticPropsType, GetStaticPropsContext } from "next";
 
-const replacer = new RegExp(process.env.ASSETS_PATH_REPLACER, "gi");
-const target = process.env.ASSETS_PATH_TO_REPLACE;
+const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
+const target = String(process.env.ASSETS_PATH_TO_REPLACE);
 
 export default function Excavation({
   Excavation,
-}: {
-  Excavation: Unwrap<typeof getExcavation>;
-}) {
-  const { content, title, date, featuredImage, author, tags } = Excavation;
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const {
+    content = "",
+    title = "Missing Title",
+    date,
+    featuredImage = {},
+    author = {},
+    tags,
+  } = Excavation || {};
+
   const breadcrumbs = useBreadcrumbs();
 
   return (
@@ -31,7 +37,7 @@ export default function Excavation({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <BreadcrumbsWrapper>
-        <Breadcrumbs nodes={breadcrumbs} currentTitle={title} />
+        <Breadcrumbs nodes={breadcrumbs} currentTitle={String(title)} />
       </BreadcrumbsWrapper>
       <ContentWrapper>
         <article>
@@ -39,19 +45,19 @@ export default function Excavation({
             <figure tw="mb-8 overflow-hidden">
               <img
                 tw="max-height[calc(60 * 0.67 * 1em)] w-full object-cover"
-                alt={featuredImage.node.altText}
-                srcSet={featuredImage.node.srcSet?.replace(replacer, target)}
+                alt={featuredImage.node?.altText ?? ""}
+                srcSet={featuredImage.node?.srcSet?.replace(replacer, target)}
                 // Wordpress is serving some weird sizes, this is a temporary fix
-                sizes={featuredImage.node.sizes
+                sizes={featuredImage.node?.sizes
                   ?.split(",")
                   .map((size, i, { length }) =>
                     i === length - 1 ? "60em" : size
                   )
                   .join(",")}
-                src={featuredImage.node.sourceUrl?.replace(replacer, target)}
+                src={featuredImage.node?.sourceUrl?.replace(replacer, target)}
               />
 
-              {featuredImage.node.caption && (
+              {featuredImage.node?.caption && (
                 <figcaption
                   tw="text-center p-2 border-b border-dotted border-bottom-color[#868e96]"
                   dangerouslySetInnerHTML={{
@@ -108,28 +114,28 @@ export default function Excavation({
                 }
               `}
               dangerouslySetInnerHTML={{
-                __html: content.replace(replacer, target),
+                __html: content ? content.replace(replacer, target) : "",
               }}
             />
 
             <footer tw="flex[1 1 0] order-1 text-right">
               <div tw="color[#868e96] text-xs leading-loose font-bold">
-                {new Date(date).toLocaleDateString()}
+                {date ? new Date(date).toLocaleDateString() : ""}
               </div>
               <div tw="font-medium">Autor:</div>
               <div>
                 <span tw="color[#1098ad] border-b border-gray-400 hover:(background-color[rgba(16,152,173,.1)])">
-                  {author.node.name}
+                  {author?.node?.name}
                 </span>
               </div>
             </footer>
             <footer tw="flex[1 1 0] order-3">
-              {tags?.nodes.length ? (
+              {tags?.nodes?.length ? (
                 <ul>
                   {tags.nodes.map((node) => (
-                    <li key={node.name}>
+                    <li key={node?.name}>
                       <span tw="background-color[rgba(16,152,173,0.15)] color[#2e7782] pl-1 pr-1.5 py-0.5 text-xs inline-block rounded-sm transition hover:(background-color[rgba(16,152,173,.3)])">
-                        {node.name}
+                        {node?.name}
                       </span>
                     </li>
                   ))}
@@ -145,20 +151,22 @@ export default function Excavation({
 
 Excavation.Layout = SiteLayout;
 
-export async function getStaticProps(context) {
-  const { slug } = context.params;
+export const getStaticProps = async (
+  context: GetStaticPropsContext<{ slug: string }>
+) => {
+  const slug = String(context.params?.slug);
   const Excavation = await getExcavation(slug);
   return {
     props: {
       Excavation,
     },
   };
-}
+};
 
-export async function getStaticPaths() {
+export const getStaticPaths = async () => {
   const allExcavations = await getAllExcavationsWithSlug();
   return {
-    paths: allExcavations.nodes.map((node) => `/vyzkumy/${node.slug}`) || [],
+    paths: allExcavations?.nodes?.map((node) => `/vyzkumy/${node?.slug}`) || [],
     fallback: false,
   };
-}
+};

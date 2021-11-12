@@ -1,22 +1,59 @@
-import fetch from "isomorphic-fetch";
+// import fetch from "isomorphic-fetch";
 import type {
+  ExcavationsQueryVariables,
   ExcavationsQuery,
+  AllExcavationsSlugsQueryVariables,
   AllExcavationsSlugsQuery,
+  ExcavationQueryVariables,
   ExcavationQuery,
+  AnnouncementsQueryVariables,
   AnnouncementsQuery,
+  AllAnnouncementsSlugsQueryVariables,
   AllAnnouncementsSlugsQuery,
+  AnnouncementQueryVariables,
   AnnouncementQuery,
+  MenuItemsQueryVariables,
   MenuItemsQuery,
+  AllPagesSlugsQueryVariables,
   AllPagesSlugsQuery,
+  PageQueryVariables,
   PageQuery,
+  GetContentTypesQueryVariables,
+  GetContentTypesQuery,
 } from "../generated/graphql";
 
-const API_URL = process.env.GRAPHQL_API_URL;
+type Query =
+  | ExcavationsQuery
+  | AllExcavationsSlugsQuery
+  | ExcavationQuery
+  | AnnouncementsQuery
+  | AllAnnouncementsSlugsQuery
+  | AnnouncementQuery
+  | MenuItemsQuery
+  | AllPagesSlugsQuery
+  | PageQuery
+  | GetContentTypesQuery;
 
-export async function fetchAPI(
-  query,
-  { variables }: { variables?: unknown } = {}
-) {
+type Options = {
+  variables?:
+    | ExcavationsQueryVariables
+    | AllExcavationsSlugsQueryVariables
+    | ExcavationQueryVariables
+    | AnnouncementsQueryVariables
+    | AllAnnouncementsSlugsQueryVariables
+    | AnnouncementQueryVariables
+    | AllPagesSlugsQueryVariables
+    | MenuItemsQueryVariables
+    | PageQueryVariables
+    | GetContentTypesQueryVariables;
+};
+
+const API_URL = String(process.env.GRAPHQL_API_URL);
+
+export async function fetchAPI<T extends Query>(
+  query: string,
+  { variables }: Options = {}
+): Promise<T> {
   const headers = { "Content-Type": "application/json" };
 
   const res = await fetch(API_URL, {
@@ -35,22 +72,14 @@ export async function fetchAPI(
   return json.data;
 }
 
-type GeneralQueryArgs = {
-  first?: number;
-  last?: number;
-  before?: string;
-  after?: string;
-  where?: object;
-};
-
 export async function getExcavations({
   first = 200,
   last,
   after,
   before,
   where = {},
-}: GeneralQueryArgs = {}) {
-  const data: ExcavationsQuery = await fetchAPI(
+}: ExcavationsQueryVariables = {}) {
+  const data = await fetchAPI<ExcavationsQuery>(
     /* GraphQL */ `
       query Excavations(
         $first: Int
@@ -97,7 +126,7 @@ export async function getExcavations({
 }
 
 export async function getAllExcavationsWithSlug() {
-  const data: AllExcavationsSlugsQuery = await fetchAPI(/* GraphQL */ `
+  const data = await fetchAPI<AllExcavationsSlugsQuery>(/* GraphQL */ `
     query AllExcavationsSlugs {
       excavations(first: 100) {
         nodes {
@@ -109,8 +138,8 @@ export async function getAllExcavationsWithSlug() {
   return data?.excavations;
 }
 
-export async function getExcavation(slug) {
-  const data: ExcavationQuery = await fetchAPI(
+export async function getExcavation(slug: ExcavationQueryVariables["id"]) {
+  const data = await fetchAPI<ExcavationQuery>(
     /* GraphQL */ `
       query Excavation($id: ID!) {
         excavation(id: $id, idType: SLUG) {
@@ -162,8 +191,8 @@ export async function getAnnouncements({
   after,
   before,
   where = {},
-}: GeneralQueryArgs = {}) {
-  const data: AnnouncementsQuery = await fetchAPI(
+}: AnnouncementsQueryVariables = {}) {
+  const data = await fetchAPI<AnnouncementsQuery>(
     /* GraphQL */ `
       query Announcements(
         $first: Int
@@ -210,7 +239,7 @@ export async function getAnnouncements({
 }
 
 export async function getAllAnnouncementsWithSlug() {
-  const data: AllAnnouncementsSlugsQuery = await fetchAPI(/* GraphQL */ `
+  const data = await fetchAPI<AllAnnouncementsSlugsQuery>(/* GraphQL */ `
     query AllAnnouncementsSlugs {
       announcements(first: 100) {
         nodes {
@@ -222,8 +251,8 @@ export async function getAllAnnouncementsWithSlug() {
   return data?.announcements;
 }
 
-export async function getAnnouncement(slug) {
-  const data: AnnouncementQuery = await fetchAPI(
+export async function getAnnouncement(slug: AnnouncementQueryVariables["id"]) {
+  const data = await fetchAPI<AnnouncementQuery>(
     /* GraphQL */ `
       query Announcement($id: ID!) {
         announcement(id: $id, idType: SLUG) {
@@ -257,8 +286,8 @@ export async function getAnnouncement(slug) {
   return data?.announcement;
 }
 
-export async function getMenuItems(menu) {
-  const data: MenuItemsQuery = await fetchAPI(
+export async function getMenuItems(menu: MenuItemsQueryVariables["id"]) {
+  const data = await fetchAPI<MenuItemsQuery>(
     /* GraphQL */ `
       query MenuItems($id: ID!) {
         menu(id: $id, idType: NAME) {
@@ -285,7 +314,7 @@ export async function getMenuItems(menu) {
 }
 
 export async function getAllPagesWithSlug() {
-  const data: AllPagesSlugsQuery = await fetchAPI(/* GraphQL */ `
+  const data = await fetchAPI<AllPagesSlugsQuery>(/* GraphQL */ `
     query AllPagesSlugs {
       pages(first: 100) {
         nodes {
@@ -297,8 +326,8 @@ export async function getAllPagesWithSlug() {
   return data?.pages;
 }
 
-export async function getPage(slug) {
-  const data: PageQuery = await fetchAPI(
+export async function getPage(slug: PageQueryVariables["id"]) {
+  const data = await fetchAPI<PageQuery>(
     /* GraphQL */ `
       query Page($id: ID!) {
         page(id: $id, idType: URI) {
@@ -327,7 +356,7 @@ export async function getPage(slug) {
 }
 
 export async function getContentTypes() {
-  const data = await fetchAPI(/* GraphQL */ `
+  const data = await fetchAPI<GetContentTypesQuery>(/* GraphQL */ `
     query getContentTypes {
       contentTypes {
         nodes {
