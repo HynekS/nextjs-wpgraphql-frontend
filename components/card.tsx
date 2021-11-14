@@ -1,39 +1,14 @@
 import Link from "next/link";
 
-import { Maybe, Announcement, Excavation, MediaItem } from "generated/graphql";
+import { AnnouncementsQuery, ExcavationsQuery } from "generated/graphql";
 
-type AnnouncementNode = Maybe<
-  { __typename?: "Announcement" } & Pick<
-    Announcement,
-    "slug" | "title" | "id"
-  > & {
-      featuredImage?: Maybe<
-        { __typename?: "NodeWithFeaturedImageToMediaItemConnectionEdge" } & {
-          node?: Maybe<
-            { __typename?: "MediaItem" } & Pick<
-              MediaItem,
-              "altText" | "srcSet" | "sourceUrl" | "sizes"
-            >
-          >;
-        }
-      >;
-    }
->;
+type AnnouncementNode = NonNullable<
+  NonNullable<AnnouncementsQuery["announcements"]>["nodes"]
+>[number];
 
-type ExcavationNode = Maybe<
-  { __typename?: "Excavation" } & Pick<Excavation, "slug" | "title" | "id"> & {
-      featuredImage?: Maybe<
-        { __typename?: "NodeWithFeaturedImageToMediaItemConnectionEdge" } & {
-          node?: Maybe<
-            { __typename?: "MediaItem" } & Pick<
-              MediaItem,
-              "altText" | "srcSet" | "sourceUrl" | "sizes"
-            >
-          >;
-        }
-      >;
-    }
->;
+type ExcavationNode = NonNullable<
+  NonNullable<ExcavationsQuery["excavations"]>["nodes"]
+>[number];
 
 const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
 const target = String(process.env.ASSETS_PATH_TO_REPLACE);
