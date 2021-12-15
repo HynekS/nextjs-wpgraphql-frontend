@@ -3,6 +3,7 @@ require("dotenv").config();
 const fs = require("fs");
 var slugify = require("slugify");
 const chalk = require("chalk");
+const dedent = require("dedent");
 
 const getMenuItems = require("./api.ts").getMenuItems;
 const getContentTypes = require("./api.ts").getContentTypes;
@@ -32,10 +33,10 @@ async function createManifestsFromCMS() {
     (err: Error) => {
       if (err) throw err;
       console.log(
-        chalk.green(`
------
-Global metadata manifest written to file ${MANIFEST_FILE_NAME}
------
+        chalk.green(dedent`
+          -----
+          Global metadata manifest written to file ${MANIFEST_FILE_NAME}
+          -----
           `)
       );
     }
