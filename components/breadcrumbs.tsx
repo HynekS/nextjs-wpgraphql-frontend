@@ -20,7 +20,7 @@ export default function Breadcrumbs({
   currentTitle = "",
 }: BreadcrumbProps) {
   return nodes ? (
-    <ol tw="flex h-full text-xs">
+    <ol tw="flex h-full overflow-hidden text-xs">
       {nodes.map(({ href, label }, i, { length }) => (
         <li tw="flex items-center" key={href}>
           {
@@ -47,9 +47,11 @@ export default function Breadcrumbs({
               </>
             ) : (
               // Last item of the list is not a link (it would make little sense)
-              currentTitle ||
-              contentTypesTuplesMap.get(removeQueryString(href)) ||
-              label
+              <span tw="truncate">
+                {currentTitle ||
+                  contentTypesTuplesMap.get(removeQueryString(href)) ||
+                  label}
+              </span>
             )
           }
         </li>

@@ -47,7 +47,7 @@ export default function Excavation({
                 tw="max-height[calc(60 * 0.67 * 1em)] w-full object-cover"
                 alt={featuredImage.node?.altText ?? ""}
                 srcSet={featuredImage.node?.srcSet?.replace(replacer, target)}
-                // Wordpress is serving some weird sizes, this is a temporary fix
+                // Wordpress is serving some weird sizes, this is a dirty temporary fix
                 sizes={featuredImage.node?.sizes
                   ?.split(",")
                   .map((size, i, { length }) =>
@@ -67,16 +67,16 @@ export default function Excavation({
               )}
             </figure>
           ) : null}
-          <div tw="flex">
-            <div tw="flex[1 1 0] background[url('/assets/images/image-jar.svg') no-repeat] opacity-25"></div>
-            <div tw="flex[4 1 0] mx-6">
-              <h1 tw="my-3 text-5xl font-medium">{title}</h1>
+          <div tw="flex md:(items-end)">
+            <div tw="hidden md:(block flex[1 1 0] background[url('/assets/images/image-jar.svg') 0 center no-repeat] min-height[96px] opacity-10)"></div>
+            <div tw="md:(flex[4 1 0] mx-6)">
+              <h1 tw="text-3xl my-0 md:(my-3 text-5xl font-medium)">{title}</h1>
             </div>
-            <div tw="flex[1 1 0]"></div>
+            <div tw="hidden md:(block flex[1 1 0])"></div>
           </div>
-          <div tw="flex">
+          <div tw="flex flex-col md:(flex-row mt-0.5)">
             <div
-              tw="flex[4 1 0] order-2 mx-6"
+              tw="mt-4 order-2 md:(flex[4 1 0] order-2 mx-6 mt-0)"
               css={`
                 figure {
                   margin: 0 0 1.5rem;
@@ -102,12 +102,22 @@ export default function Excavation({
                   display: flex;
                   flex-wrap: wrap;
                   justify-content: start;
+                  padding-bottom: 1rem;
                 }
                 .gallery-item {
                   flex: 0 0 33%;
+                  margin-top: 1rem;
                 }
                 .gallery-caption {
-                  visibility: hidden;
+                  position: absolute;
+                  width: 1px;
+                  height: 1px;
+                  padding: 0;
+                  margin: -1px;
+                  overflow: hidden;
+                  clip: rect(0, 0, 0, 0);
+                  white-space: nowrap;
+                  border-width: 0;
                 }
                 .gallery-item img {
                   margin: 0 auto;
@@ -118,23 +128,25 @@ export default function Excavation({
               }}
             />
 
-            <footer tw="flex[1 1 0] order-1 text-right">
-              <div tw="color[#868e96] text-xs leading-loose font-bold">
+            <footer tw="order-1 md:(flex[1 1 0] order-1 text-right)">
+              <div tw="mt-2 color[#868e96] text-xs leading-loose font-bold md:(mt-0)">
                 {date ? new Date(date).toLocaleDateString() : ""}
               </div>
-              <div tw="font-medium">Autor:</div>
-              <div>
+              <div tw="font-medium mr-1 inline-block md:(mr-0 block)">
+                Autor:
+              </div>
+              <div tw="inline-block md:(block)">
                 <span tw="color[#1098ad] border-b border-gray-400 hover:(background-color[rgba(16,152,173,.1)])">
                   {author?.node?.name}
                 </span>
               </div>
             </footer>
-            <footer tw="flex[1 1 0] order-3">
+            <footer tw="order-3 md:(flex[1 1 0] order-3)">
               {tags?.nodes?.length ? (
-                <ul>
+                <ul tw="flex md:(block)">
                   {tags.nodes.map((node) => (
                     <li key={node?.name}>
-                      <span tw="background-color[rgba(16,152,173,0.15)] color[#2e7782] pl-1 pr-1.5 py-0.5 text-xs inline-block rounded-sm transition hover:(background-color[rgba(16,152,173,.3)])">
+                      <span tw="mr-2 md:(mr-0) background-color[rgba(16,152,173,0.15)] color[#2e7782] pl-1 pr-1.5 py-0.5 text-xs inline-block rounded-sm transition hover:(background-color[rgba(16,152,173,.3)])">
                         {node?.name}
                       </span>
                     </li>

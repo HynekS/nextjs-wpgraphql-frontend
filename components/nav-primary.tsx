@@ -26,6 +26,7 @@ const usePushContent = (
 ) =>
   useEffect(() => {
     let resizeObserver: ResizeObserver | null;
+
     if (headerElementRef.current) {
       resizeObserver = new ResizeObserver(() => {
         let transformed = false;
@@ -45,7 +46,30 @@ const usePushContent = (
       resizeObserver = null;
     };
   }, []);
+/*
+const usePreventTransition = () =>
+  useEffect(() => {
+    let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
+      let timer: ReturnType<typeof setTimeout> | number | null = 0;
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      } else {
+        document.body.classList.add("stop-transitions");
 
+        timer = setTimeout(() => {
+          document.body.classList.remove("stop-transitions");
+          timer = null;
+        }, 0);
+      }
+    });
+    resizeObserver.observe(document.body);
+
+    return () => {
+      resizeObserver = null;
+    };
+  });
+*/
 export default function NavPrimary({ navItems }: NavPrimaryProps) {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const { asPath } = useRouter();
@@ -60,6 +84,7 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
   };
 
   usePushContent(headerElement);
+  // usePreventTransition();
 
   // Listen to Esc key
   useEffect(() => {
@@ -96,14 +121,14 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
     <nav tw="h-full md:(flex h-auto justify-end)">
       <ul
         css={[
-          tw`pointer-events-auto h-full transition[transform 0.5s ease-in-out] bg-white md:(flex py-4 static w-auto h-auto)`,
+          tw`pointer-events-auto h-full transition[transform 0.5s ease-in-out] py-6 bg-white flex flex-col text-xl md:(transition[none] text-base flex-row py-4 static w-auto h-auto)`,
           isNavMenuOpen
             ? tw`md:(transform[translateX(0)])`
             : tw`(transform[translateX(-100%)]) md:(transform[translateX(0)])`,
         ]}
       >
         {items.map((item) => (
-          <li key={item.id}>
+          <li key={item.id} tw="py-4 pl-4 md:(py-0 pl-0)">
             <Link href={item.path}>
               <a
                 css={[
@@ -212,23 +237,25 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
               transform 0.075s cubic-bezier(0.55, 0.055, 0.675, 0.19);
           }
 
-          &.is-active .hamburger-inner {
-            transform: rotate(45deg);
-            transition-delay: 0.12s;
-            transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-          }
+          &.is-active {
+            & .hamburger-inner {
+              transform: rotate(45deg);
+              transition-delay: 0.12s;
+              transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+            }
 
-          &.is-active .hamburger-inner::before {
-            top: 0;
-            opacity: 0;
-            transition: top 0.075s ease, opacity 0.075s 0.12s ease;
-          }
+            & .hamburger-inner::before {
+              top: 0;
+              opacity: 0;
+              transition: top 0.075s ease, opacity 0.075s 0.12s ease;
+            }
 
-          &.is-active .hamburger-inner::after {
-            bottom: 0;
-            transform: rotate(-90deg);
-            transition: bottom 0.075s ease,
-              transform 0.075s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
+            & .hamburger-inner::after {
+              bottom: 0;
+              transform: rotate(-90deg);
+              transition: bottom 0.075s ease,
+                transform 0.075s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
+            }
           }
         }
       `}

@@ -21,7 +21,7 @@ export default function Announcement({
   announcement,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const breadcrumbs = useBreadcrumbs();
-  let { content, title } = announcement || {};
+  let { content, title, date } = announcement || {};
 
   return (
     <div>
@@ -37,7 +37,12 @@ export default function Announcement({
       </BreadcrumbsWrapper>
       <ContentWrapper>
         <div tw="md:(max-width[76ch])">
-          <h1>{title}</h1>
+          <h1 tw="leading-none">{title}</h1>
+          <footer>
+            <div tw="mt-2 color[#868e96] text-xs leading-loose font-bold">
+              {date ? new Date(date).toLocaleDateString() : ""}
+            </div>
+          </footer>
           <section
             // duplicate declarations, see ../vyzkumy/[slug].tsx
             css={css`

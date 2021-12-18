@@ -20,7 +20,7 @@ type CardProps = {
 
 export default function Card({ baseUrl, node }: CardProps) {
   return node ? (
-    <div key={node.id} tw="mb-8 md:(width[31%])">
+    <div key={node.id} tw="mb-8 w-full md:(width[31%])">
       <div tw="border-bottom[5px solid var(--brand-color-yellow)] relative overflow-hidden">
         <Link href={`/${baseUrl}/${node.slug}`}>
           <a tw="flex max-h-52 h-52">
