@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from "react";
+import { Fragment } from "react";
 import { NextPage } from "next";
 import { Global } from "@emotion/react";
 import { GlobalStyles } from "twin.macro";
@@ -76,7 +76,12 @@ function MyApp({ Component, pageProps }: AppLayoutProps) {
         html::selection {
           background-color: #C84819;
           color: ${oc`$oc-gray-1`};
-        }`}
+        }
+        
+        .stop-transitions * {
+          transition: none !important;
+        }
+        `}
       />
       <Layout>
         <Component {...pageProps} />

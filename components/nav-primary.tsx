@@ -46,7 +46,7 @@ const usePushContent = (
       resizeObserver = null;
     };
   }, []);
-/*
+
 const usePreventTransition = () =>
   useEffect(() => {
     let resizeObserver: ResizeObserver | null = new ResizeObserver(() => {
@@ -60,7 +60,7 @@ const usePreventTransition = () =>
         timer = setTimeout(() => {
           document.body.classList.remove("stop-transitions");
           timer = null;
-        }, 0);
+        }, 10);
       }
     });
     resizeObserver.observe(document.body);
@@ -68,8 +68,8 @@ const usePreventTransition = () =>
     return () => {
       resizeObserver = null;
     };
-  });
-*/
+  }, []);
+
 export default function NavPrimary({ navItems }: NavPrimaryProps) {
   const [isNavMenuOpen, setIsNavMenuOpen] = useState(false);
   const { asPath } = useRouter();
@@ -84,7 +84,7 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
   };
 
   usePushContent(headerElement);
-  // usePreventTransition();
+  usePreventTransition();
 
   // Listen to Esc key
   useEffect(() => {
