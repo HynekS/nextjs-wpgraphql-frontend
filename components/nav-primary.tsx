@@ -86,6 +86,11 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
   usePushContent(headerElement);
   usePreventTransition();
 
+  /**
+   * Leaving this three effect in the components body,
+   * because they are dependent on the state updates and
+   * I don't see much value in abstracting them:
+   */
   // Listen to Esc key
   useEffect(() => {
     document.addEventListener("keyup", closeOnEsc);
@@ -151,7 +156,6 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
     <nav
       tw="md:(hidden) p-2"
       aria-labelledby="primary-navigation"
-      // TODO simplify using selector nesting etc.
       css={css`
         .hamburger {
           display: inline-block;
@@ -261,7 +265,6 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
       `}
     >
       <button
-        // sorry for the !, I just dont't have morals to do it in a cleaner way (& I don't want to set it via the hamburger css snippet)
         id="primary-navigation"
         aria-label={`${
           isNavMenuOpen ? `Hide navigation menu` : `Show navigation menu`
