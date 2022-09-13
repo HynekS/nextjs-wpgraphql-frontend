@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
+import tw from "twin.macro";
 
 import useBreadcrumbs from "@hooks/use-breadcrumbs";
 
@@ -54,24 +55,6 @@ const ExcavationsPage = ({
       </BreadcrumbsWrapper>
       <ContentWrapper>
         <h1>Výzkumy</h1>
-        <button
-          disabled={page < 1}
-          onClick={() => {
-            router.push(
-              +page === 1 ? `/vyzkumy` : `/vyzkumy?page=${+page - 1}`
-            );
-          }}
-        >
-          Previous
-        </button>
-        <button
-          disabled={!isNextPageSlice}
-          onClick={() => {
-            router.push(`/vyzkumy?page=${+page + 1}`);
-          }}
-        >
-          Next
-        </button>
 
         <section tw="flex flex-row flex-wrap justify-between">
           {currentPageSlice.length
@@ -80,6 +63,34 @@ const ExcavationsPage = ({
               ))
             : null}
         </section>
+        <div tw="flex justify-between">
+          <button
+            css={[
+              tw`border p-4 rounded transition-transform hover:(text-gray-800 transform[translateY(-3px)] transition-transform)`,
+              page < 1 && tw`invisible`,
+            ]}
+            disabled={page < 1}
+            onClick={() => {
+              router.push(
+                +page === 1 ? `/vyzkumy` : `/vyzkumy?page=${+page - 1}`
+              );
+            }}
+          >
+            <span tw="pr-2">🡠</span> Předchozí
+          </button>
+          <button
+            css={[
+              tw`border p-4 rounded transition-transform hover:(text-gray-800 transform[translateY(-3px)] transition-transform)`,
+              !isNextPageSlice && tw`invisible`,
+            ]}
+            disabled={!isNextPageSlice}
+            onClick={() => {
+              router.push(`/vyzkumy?page=${+page + 1}`);
+            }}
+          >
+            Následující <span tw="pl-2">🡢</span>
+          </button>
+        </div>
       </ContentWrapper>
     </>
   );
