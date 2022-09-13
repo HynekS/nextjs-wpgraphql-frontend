@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Contacts() {
   return (
-    <div tw="hidden md:(flex justify-end)">
+    <div tw="hidden md:(flex justify-end pointer-events-auto)">
       <Link href="tel:+420774701825">
         <a tw="flex items-center ml-4 color[var(--default-text-color)] hover:(color[var(--brand-color-red)] border-color[var(--brand-color-red)])">
           <svg
