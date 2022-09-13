@@ -35,13 +35,12 @@ const ExcavationsPage = ({
       +page * POSTS_PER_PAGE + POSTS_PER_PAGE
     ) || [];
 
-  const isNextPageSlice =
-    Boolean(
-      nodes?.slice(
-        (+page + 1) * POSTS_PER_PAGE,
-        (+page + 1) * POSTS_PER_PAGE + POSTS_PER_PAGE
-      ).length
-    ) || [];
+  const isNextPageSlice = Boolean(
+    nodes?.slice(
+      (+page + 1) * POSTS_PER_PAGE,
+      (+page + 1) * POSTS_PER_PAGE + POSTS_PER_PAGE
+    ).length
+  );
 
   return (
     <>
