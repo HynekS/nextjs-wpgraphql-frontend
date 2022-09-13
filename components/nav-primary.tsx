@@ -283,7 +283,7 @@ export default function NavPrimary({ navItems }: NavPrimaryProps) {
     <>
       <div
         ref={headerElement}
-        tw="flex pt-3 items-center bg-white pointer-events-auto background-image[url('/assets/images/triangles.svg')] background-position[0 -12px] bg-repeat-x md:(bg-none pt-0)"
+        tw="flex pt-3 items-center bg-white pointer-events-auto background-image[url('/assets/images/triangles.svg')] background-position[0 -12px] bg-repeat-x px-4  md:(bg-none pt-0 px-0)"
       >
         <Logo />
         {toggleButton()}
