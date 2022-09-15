@@ -56,8 +56,13 @@ export const getStaticProps = async (
 
 export const getStaticPaths = async () => {
   const pages = await getAllPagesWithSlug();
+
   return {
-    paths: pages?.nodes?.map((node) => `/${node?.slug}`) || [],
+    paths:
+      pages?.nodes
+        /* Dirty fix! TODO use fs to filter out non-dynamic pages */
+        ?.filter((node) => node?.slug !== "pro-stavebniky")
+        .map((node) => `/${node?.slug}`) || [],
     fallback: false,
   };
 };
