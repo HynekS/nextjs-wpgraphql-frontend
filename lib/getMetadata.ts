@@ -8,7 +8,7 @@ const dedent = require("dedent");
 const getMenuItems = require("./api.ts").getMenuItems;
 const getContentTypes = require("./api.ts").getContentTypes;
 
-type PathLableTuple = [string, string];
+type PathLabelTuple = [string, string];
 
 const MANIFEST_FILE_NAME = "global-manifest.json";
 const PRIMARY_NAV_NAME = "nav-primary";
@@ -21,7 +21,7 @@ async function createManifestsFromCMS() {
   const navItems = await getMenuItems(PRIMARY_NAV_NAME);
   const contentTypes = await getContentTypes();
 
-  const contentTypesTuples: PathLableTuple[] =
+  const contentTypesTuples: PathLabelTuple[] =
     contentTypes?.nodes.map((node: ContentTypeNode) => [
       "/" + slugify(node.label, { lower: true }),
       node.label,
