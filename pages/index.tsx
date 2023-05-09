@@ -23,7 +23,7 @@ export default function Home({
         <title>Labrys, o.p.s.</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div tw="background[url('/assets/images/bg-dummy.jpg') 50%/50% no-repeat] bg-cover min-height[627px] flex relative z-0 after:(content[''] absolute inset-0 bg-black bg-opacity-25)">
+      <div tw="background[url('/assets/images/bg-dummy.jpg') 50%/50% no-repeat] bg-cover min-height[627px] flex relative z-0 after:(content[''] absolute inset-0 bg-black bg-opacity-30)">
         <ContentWrapper>
           <div tw="relative z-10 mx-auto my-0 text-center">
             <h1 tw="w-full px-4 mt-8 text-center text-gray-200">
@@ -31,10 +31,10 @@ export default function Home({
             </h1>
             <div
               className="group"
-              tw="mx-16 mt-8 focus:(outline-none) color[#b2f2bb] inline-block"
+              tw="mx-16 mt-8 focus:(outline-none) inline-block"
             >
               <Link href="/pro-stavebniky">
-                <a tw="color[#b2f2bb] hover:(color[#b2f2bb])">
+                <a tw="color[#b2f2bb] hover:(color[#b2f2bb])" tabIndex={0}>
                   <svg
                     width="201.167px"
                     height="99.309px"
@@ -44,18 +44,37 @@ export default function Home({
                     <use xlinkHref="/assets/images/image-excavator.svg#excavator" />
                   </svg>
 
-                  <h2 tw="p-4 mt-8 text-base border rounded-xl bg-black color[#b2f2bb] border-color[#b2f2bb] transition duration-300 group-hocus:(background-color[#b2f2bb] text-black border-color[#b2f2bb])">
-                    Chystám se stavět
+                  <h2 tw="width[180px] height[50px] flex items-center justify-center relative mt-8 text-base color[#b2f2bb] transition duration-300">
+                    <svg
+                      viewBox="0 0 180 50"
+                      tw="absolute fill[none] stroke-width[2] stroke[#b2f2bb]"
+                    >
+                      <rect
+                        x="0"
+                        y="0"
+                        width="180"
+                        height="50"
+                        tw="stroke-width[2] fill[#000000]"
+                      />
+                      <rect
+                        x="0"
+                        y="0"
+                        width="180"
+                        height="50"
+                        tw="stroke-width[4] stroke-dasharray[150 480] stroke-dashoffset[150] group-hocus:(stroke-dashoffset[-480] transition[all 1s ease-in-out])"
+                      />
+                    </svg>
+                    <span tw="relative my-auto">Chystám se stavět</span>
                   </h2>
                 </a>
               </Link>
             </div>
             <div
               className="group"
-              tw="mx-16 mt-8 focus:(outline-none) color[#b2f2bb] inline-block"
+              tw="mx-16 mt-8 focus:(outline-none) inline-block"
             >
               <Link href="/vyzkumy">
-                <a tw="color[#b2f2bb] hover:(color[#b2f2bb])">
+                <a tw="color[#b2f2bb] hover:(color[#b2f2bb])" tabIndex={0}>
                   <svg
                     width="110.006px"
                     height="96px"
@@ -64,8 +83,27 @@ export default function Home({
                   >
                     <use xlinkHref="/assets/images/image-jar.svg#image-jar" />
                   </svg>
-                  <h2 tw="p-4 mt-8 text-base border rounded-xl bg-black color[#b2f2bb] border-color[#b2f2bb] transition duration-300 group-hocus:(background-color[#b2f2bb] text-black border-color[#b2f2bb])">
-                    Zajímá mě archeologie
+                  <h2 tw="width[180px] height[50px] flex items-center justify-center relative mt-8 text-base /*color[#b2f2bb]*/ transition duration-300">
+                    <svg
+                      viewBox="0 0 180 50"
+                      tw="absolute fill[none] stroke-width[2] stroke[#b2f2bb]"
+                    >
+                      <rect
+                        x="0"
+                        y="0"
+                        width="180"
+                        height="50"
+                        tw="stroke-width[2] fill[#000000]"
+                      />
+                      <rect
+                        x="0"
+                        y="0"
+                        width="180"
+                        height="50"
+                        tw="stroke-width[4] stroke-dasharray[150 480] stroke-dashoffset[150] group-hocus:(stroke-dashoffset[-480] transition[all 1s ease-in-out])"
+                      />
+                    </svg>
+                    <span tw="relative my-auto">Zajímá mě archeologie</span>
                   </h2>
                 </a>
               </Link>
