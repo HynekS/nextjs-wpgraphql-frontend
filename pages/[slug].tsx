@@ -33,7 +33,7 @@ export default function Page({
         />
       </BreadcrumbsWrapper>
       <ContentWrapper>
-        <h1>{title}</h1>
+        <h1 tw="text-5xl">{title}</h1>
         <section dangerouslySetInnerHTML={{ __html: content ?? "" }} />
       </ContentWrapper>
     </div>
@@ -60,8 +60,10 @@ export const getStaticPaths = async () => {
   return {
     paths:
       pages?.nodes
-        /* Dirty fix! TODO use fs to filter out non-dynamic pages */
-        ?.filter((node) => node?.slug !== "pro-stavebniky")
+        /* Dirty fix! TODO use fs or sth similar to filter out non-dynamic pages */
+        ?.filter(
+          (node) => !["pro-stavebniky", "kontakt"].includes(String(node?.slug))
+        )
         .map((node) => `/${node?.slug}`) || [],
     fallback: false,
   };
