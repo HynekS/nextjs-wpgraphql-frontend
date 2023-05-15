@@ -7,6 +7,7 @@
     "build": "npm run manifest && next build",
     "start": "next start",
     "static": "npm run manifest && next build && next export && cd out && npx serve",
+    "deploy": "npm run manifest && next build && next export && netlify deploy",
     "manifest": "ts-node ./lib/getMetadata.ts",
     "codegen": "graphql-codegen --config codegen.yml",
     "copy": "ts-node ./lib/copyAssets.ts",
