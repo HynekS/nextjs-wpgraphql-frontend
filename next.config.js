@@ -3,8 +3,7 @@ const Dotenv = require("dotenv-webpack");
 module.exports = {
   env: {
     GRAPHQL_API_URL: process.env.GRAPHQL_API_URL,
-    ASSETS_PATH_PATTERN: "http://labrys.local/app/foobar",
-
+    ASSETS_PATH_PATTERN: "http://labrys.local/app",
     ASSETS_PATH_REPLACEMENT: "/assets",
   },
   eslint: {
