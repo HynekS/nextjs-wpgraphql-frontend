@@ -4,6 +4,8 @@ const fs = require("fs");
 var slugify = require("slugify");
 const chalk = require("chalk");
 const dedent = require("dedent");
+// Intellisense displays 'fetch' as unused, however, scripts would break if removed
+const fetch = require("isomorphic-fetch");
 
 const getMenuItems = require("./api.ts").getMenuItems;
 const getContentTypes = require("./api.ts").getContentTypes;
