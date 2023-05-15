@@ -72,7 +72,7 @@ function MyApp({ Component, pageProps }: AppLayoutProps) {
         button {
           cursor: pointer;
         }
-        
+     
         html::selection {
           background-color: #C84819;
           color: ${oc`$oc-gray-1`};
