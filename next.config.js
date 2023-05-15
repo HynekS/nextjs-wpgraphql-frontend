@@ -11,21 +11,18 @@ module.exports = {
     // Temporary fix to render-blocking typekit script (adding 'async' causes FOUT)
     ignoreDuringBuilds: true,
   },
+
   webpack: (config, { dev, isServer }) => {
     config.plugins.push(new Dotenv());
-
+    /*
+    Breaks production build (it's hanging), have do be disabled :(
     if (!dev && !isServer) {
       Object.assign(config.resolve.alias, {
         react: "preact/compat",
         "react-dom/test-utils": "preact/test-utils",
         "react-dom": "preact/compat",
       });
-    }
-    if (!isServer) {
-      // Unset client-side javascript that only works server-side
-      // https://github.com/vercel/next.js/issues/7755#issuecomment-508633125
-      config.node = { fs: "empty", module: "empty" };
-    }
+    }*/
 
     return config;
   },
