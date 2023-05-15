@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { css } from "@emotion/react";
 
 import useBreadcrumbs from "@hooks/use-breadcrumbs";
 
@@ -34,7 +35,19 @@ export default function Page({
       </BreadcrumbsWrapper>
       <ContentWrapper>
         <h1 tw="text-5xl">{title}</h1>
-        <section dangerouslySetInnerHTML={{ __html: content ?? "" }} />
+        <section
+          dangerouslySetInnerHTML={{ __html: content ?? "" }}
+          css={css`
+            ul {
+              list-style: disc;
+              margin-left: 1em;
+            }
+
+            li {
+              margin-left: 1em;
+            }
+          `}
+        />
       </ContentWrapper>
     </div>
   );
