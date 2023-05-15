@@ -73,7 +73,7 @@ export default function Excavation({
               )}
             </figure>
           ) : null}
-          <div tw="flex md:(items-end)">
+          <div tw="flex md:(items-end) mb-4">
             <div tw="hidden md:(block flex[1 1 0] background[url('/assets/images/image-jar.svg') 0 center no-repeat] min-height[96px] opacity-10)"></div>
             <div tw="md:(flex[4 1 0] mx-6)">
               <h1 tw="text-3xl my-0 md:(my-3 text-5xl font-medium)">{title}</h1>
