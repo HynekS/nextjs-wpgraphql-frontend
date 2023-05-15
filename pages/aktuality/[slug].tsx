@@ -14,8 +14,8 @@ import { getAnnouncement, getAllAnnouncementsWithSlug } from "@lib/api";
 //types
 import type { InferGetStaticPropsType, GetStaticPropsContext } from "next";
 
-const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
-const target = String(process.env.ASSETS_PATH_TO_REPLACE);
+const pattern = new RegExp(String(process.env.ASSETS_PATH_PATTERN), "gi");
+const replacement = String(process.env.ASSETS_PATH_REPLACEMENT);
 
 export default function Announcement({
   announcement,
@@ -65,7 +65,7 @@ export default function Announcement({
               }
             `}
             dangerouslySetInnerHTML={{
-              __html: content ? content.replace(replacer, target) : "",
+              __html: content ? content.replace(pattern, replacement) : "",
             }}
           />
         </div>

@@ -13,8 +13,8 @@ import { getExcavation, getAllExcavationsWithSlug } from "@lib/api";
 // types
 import type { InferGetStaticPropsType, GetStaticPropsContext } from "next";
 
-const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
-const target = String(process.env.ASSETS_PATH_TO_REPLACE);
+const pattern = new RegExp(String(process.env.ASSETS_PATH_PATTERN), "gi");
+const replacement = String(process.env.ASSETS_PATH_REPLACEMENT);
 
 export default function Excavation({
   Excavation,
@@ -46,7 +46,10 @@ export default function Excavation({
               <img
                 tw="max-height[calc(60 * 0.67 * 1em)] w-full object-cover"
                 alt={featuredImage.node?.altText ?? ""}
-                srcSet={featuredImage.node?.srcSet?.replace(replacer, target)}
+                srcSet={featuredImage.node?.srcSet?.replace(
+                  pattern,
+                  replacement
+                )}
                 // Wordpress is serving some weird sizes, this is a dirty temporary fix
                 sizes={featuredImage.node?.sizes
                   ?.split(",")
@@ -54,7 +57,10 @@ export default function Excavation({
                     i === length - 1 ? "60em" : size
                   )
                   .join(",")}
-                src={featuredImage.node?.sourceUrl?.replace(replacer, target)}
+                src={featuredImage.node?.sourceUrl?.replace(
+                  pattern,
+                  replacement
+                )}
               />
 
               {featuredImage.node?.caption && (
@@ -124,7 +130,7 @@ export default function Excavation({
                 }
               `}
               dangerouslySetInnerHTML={{
-                __html: content ? content.replace(replacer, target) : "",
+                __html: content ? content.replace(pattern, replacement) : "",
               }}
             />
 

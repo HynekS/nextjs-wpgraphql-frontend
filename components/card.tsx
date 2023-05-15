@@ -10,8 +10,8 @@ type ExcavationNode = NonNullable<
   NonNullable<ExcavationsQuery["excavations"]>["nodes"]
 >[number];
 
-const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
-const target = String(process.env.ASSETS_PATH_TO_REPLACE);
+const pattern = new RegExp(String(process.env.ASSETS_PATH_PATTERN), "gi");
+const replacement = String(process.env.ASSETS_PATH_REPLACEMENT);
 
 type CardProps = {
   baseUrl: string;
@@ -30,15 +30,15 @@ export default function Card({ baseUrl, node }: CardProps) {
                 // Some srcSets are missing, even after regenerating thumbnails :/
                 (node.featuredImage?.node?.srcSet &&
                   String(node.featuredImage.node.srcSet).replace(
-                    replacer,
-                    target
+                    pattern,
+                    replacement
                   )) ??
                 undefined
               }
               sizes={node.featuredImage?.node?.sizes ?? undefined}
               src={String(node.featuredImage?.node?.sourceUrl).replace(
-                replacer,
-                target
+                pattern,
+                replacement
               )}
               alt={node.featuredImage?.node?.altText ?? ""}
             ></img>

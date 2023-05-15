@@ -11,8 +11,8 @@ import { getAnnouncements, getExcavations } from "@lib/api";
 // types
 import type { InferGetStaticPropsType } from "next";
 
-const replacer = new RegExp(String(process.env.ASSETS_PATH_REPLACER), "gi");
-const target = String(process.env.ASSETS_PATH_TO_REPLACE);
+const pattern = new RegExp(String(process.env.ASSETS_PATH_PATTERN), "gi");
+const replacement = String(process.env.ASSETS_PATH_REPLACEMENT);
 export default function Home({
   latestExcavations = {},
   latestAnnouncements = {},
@@ -83,7 +83,7 @@ export default function Home({
                   >
                     <use xlinkHref="/assets/images/image-jar.svg#image-jar" />
                   </svg>
-                  <h2 tw="width[180px] height[50px] flex items-center justify-center relative mt-8 text-base /*color[#b2f2bb]*/ transition duration-300">
+                  <h2 tw="width[180px] height[50px] flex items-center justify-center relative mt-8 text-base transition duration-300">
                     <svg
                       viewBox="0 0 180 50"
                       tw="absolute fill[none] stroke-width[2] stroke[#b2f2bb]"
@@ -133,8 +133,8 @@ export default function Home({
                                 (node.featuredImage?.node?.srcSet &&
                                   String(
                                     node.featuredImage.node.srcSet.replace(
-                                      replacer,
-                                      target
+                                      pattern,
+                                      replacement
                                     )
                                   )) ??
                                 undefined
@@ -144,8 +144,8 @@ export default function Home({
                               }
                               src={String(
                                 node.featuredImage?.node?.sourceUrl?.replace(
-                                  replacer,
-                                  target
+                                  pattern,
+                                  replacement
                                 )
                               )}
                               alt={node.featuredImage?.node?.altText ?? ""}
@@ -178,16 +178,16 @@ export default function Home({
                                 (node.featuredImage?.node?.srcSet &&
                                   String(
                                     node.featuredImage?.node?.srcSet?.replace(
-                                      replacer,
-                                      target
+                                      pattern,
+                                      replacement
                                     )
                                   )) ||
                                 undefined
                               }
                               src={String(
                                 node.featuredImage?.node?.sourceUrl?.replace(
-                                  replacer,
-                                  target
+                                  pattern,
+                                  replacement
                                 )
                               )}
                               alt={node.featuredImage?.node?.altText ?? ""}
