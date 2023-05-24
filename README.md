@@ -1,4 +1,4 @@
-# Legacy WordPress web: Redesign and use Next.js front-end
+# Legacy WordPress web: Redesign and migrate to Next.js
 
 A new version of a legacy WordPress site for a small company operating in the field of archaeology.
 
