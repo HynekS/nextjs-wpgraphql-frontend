@@ -23,7 +23,30 @@ export default function Home({
         <title>Labrys, o.p.s.</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div tw="background[url('/assets/images/bg-dummy.jpg') 50%/50% no-repeat] bg-cover min-height[627px] flex relative z-0 after:(content[''] absolute inset-0 bg-black bg-opacity-30)">
+      <div tw="min-height[627px] overflow-hidden flex relative z-0 after:(content[''] absolute inset-0 bg-black bg-opacity-30)">
+        <picture tw="absolute inset-0 h-full w-full object-cover object-center">
+          <source
+            srcSet="/assets/images/bg-dummy-512x640.jpg"
+            media="(max-width: 640px)"
+            width="512"
+            height="640"
+            tw="absolute inset-0 h-full w-full object-cover object-center"
+          />
+          <source
+            srcSet="/assets/images/bg-dummy-853x627.jpg"
+            media="(max-width: 853w) and (min-width: 641px)"
+            width="853"
+            height="627"
+            tw="absolute inset-0 h-full w-full object-cover object-center"
+          />
+          <img
+            src="/assets/images/bg-dummy-1920x627.jpg"
+            alt="hero image"
+            width="1920"
+            height="627"
+            tw="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        </picture>
         <ContentWrapper>
           <div tw="relative z-10 mx-auto my-0 text-center">
             <h1 tw="w-full px-4 mt-8 text-center text-gray-200">
